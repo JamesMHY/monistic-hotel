@@ -1,0 +1,635 @@
+<?php
+
+session_start();
+    
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Monistic-Hotel</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="cache-control" content="max-age=86400, public" />
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="270203284440-h0uk50qsngj7976gfl5ihmie64cf643u.apps.googleusercontent.com">
+    <link href="images/logo.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="css/little-widgets.css" />
+    <link rel="stylesheet" type="text/css" href="css/login.css" />
+    <link rel="stylesheet" type="text/css" href="css/result.css" />
+    <link rel="stylesheet" type="text/css" href="css/splide.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/pagination.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.3/rangeslider.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="js/pagination.js"></script>
+
+<body style="overflow-x: hidden;">
+    <header id="header" style="height: 100px; z-index: 1000; position: fixed;top: 0;width: 100%;">
+        <div class="container">
+            <div id="nav-item">
+                <nav class="navbar">
+                    <a href=""><img src="images/logo.png" alt="" title="" width="120" /></a>
+                    <div class="form-group" style="display: none;" id="search_header_bar">
+                        <span class="fa fa-search search_header_clear"> Where are you going?</span>
+                    </div>
+                    <a class="fas fa-users" data-lw-onclick="#login" id="login_button"></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="lw-widget lw-widget_fullscreen" id="login">
+        <div class="lw-overlay" data-lw-close id="close"></div>
+        <div class="lw-container" style="border-radius: 10px;">
+            <div class="lw-item lw-item_bg"><button id="clear" class="lw-close" type="button" data-lw-close><i class="fa fa-times" style="font-size: 50px;"></i></button>
+                <form class="login100-form validate-form" method="POST" autocomplete="off">
+                    <h1 style="text-align: center;">SIGN IN</h1>
+                    <div class="wrap-input100 validate-input" data-validate="員工編號錯誤" style="margin-top: 50px;">
+                        <input class="input100" type="email" name="email" id="email">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Email</span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="密碼錯誤">
+                        <input class="input100" type="password" name="password" id="password">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Password</span>
+                    </div>
+                    <div class="container-login100-form-btn" style="margin-top: 50px;">
+                        <button type="button" class="login100-form-btn" id="myBtn">SIGN IN</button>
+                    </div>
+                    <div>
+                        <span style="text-align: center;display: block;margin-top: 20px;">You can also use these accounts login below</span>
+                    </div>
+                    <div id="gSignInWrapper">
+                        <div id="google_login" class="customGPlusSignIn customBtn">
+                          <span class="icon"></span>
+                          <span class="buttonText">Sign in with Google</span>
+                        </div>
+                    </div>
+                    <div class="" data-max-rows="1" data-size="large" data-button-type="continue_with" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLoginState();"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <main id="main" style="margin-top: 150px;">
+        <div class="booking-form">
+            <div class="container">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="form-group">
+                            <span class="form-label">Location</span>
+                            <input class="form-control" type="text" placeholder="Where are you going?" id="location" value="" oninput="clear_location()">
+                            <span id="location_clear" class="fa fa-times searchclear"></span>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <span class="form-label">Guests</span>
+                            <input class="form-control" id="guest" type="text" readonly onclick="show_guests()">
+                            <span id="guest_clear" class="fa fa-times guestclear"></span>
+                        </div>
+                        <div id="guest_detail">
+                            <div class="guest_type">
+                                <span class="fas fa-male" style="width: 25px;display: inline-block;"></span>
+                                <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">adult</span>
+                                <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                <span class="guest_no" id="adult">0</span>
+                                <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                            </div>
+                            <div class="guest_type">
+                                <span class="fas fa-child" style="width: 25px;display: inline-block;"></span>
+                                <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">child</span>
+                                <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                <span class="guest_no" id="child">0</span>
+                                <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                            </div>
+                            <div class="guest_type">
+                                <span class="fas fa-baby" style="width: 25px;display: inline-block;"></span>
+                                <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">infant</span>
+                                <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                <span class="guest_no" id="infant">0</span>
+                                <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <span class="form-label">Check In</span>
+                            <input type="text" value="" label="Start" id="start" name="start" class="form-control" readonly style="text-align: center;">
+                            <span id="start_clear" class="fa fa-times calendarclear"></span>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <span class="form-label">Check out</span>
+                            <input type="text" value="" label="End" id="end" name="end" class="form-control" readonly style="text-align: center;"> 
+                            <span id="end_clear" class="fa fa-times calendarclear"></span>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="form-btn">
+                            <button class="submit-btn fas fa-search"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 50px;">
+            <div class="row">
+                <h1 style="width: auto;">Places to stay near you</h1>
+            </div>
+        </div>
+        <div class="container" style="margin-bottom: 50px">
+            <div class="row" id="data-container">
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+                <div class="col-3" style="margin-top: 50px;">
+                    <a href="" class="property">
+                        <img class="property_img" src="images/rooms/470821705/470821705-1.jpg">
+                        <h6 class="property_name">B ) Whole Apartment (Max 11ppl)</h6>
+                        <h6 class="property_fee">$1,614／night</h6>
+                        <h6 class="property_rating far fa-smile"> 5.0</h6>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div id="pagination-container" style="width: fit-content;margin: auto;"></div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">Support</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="">Image Rectoucing</a></li>
+                            <li><a href="">Clipping Path</a></li>
+                            <li><a href="">Hollow Man Montage</a></li>
+                            <li><a href="">Ebay & Amazon</a></li>
+                            <li><a href="">Hair Masking/Clipping</a></li>
+                            <li><a href="">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">About</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="">Remove Background</a></li>
+                            <li><a href="">Shadows & Mirror Reflection</a></li>
+                            <li><a href="">Logo Design</a></li>
+                            <li><a href="">Vectorization</a></li>
+                            <li><a href="">Hair Masking/Clipping</a></li>
+                            <li><a href="">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">About</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="">Remove Background</a></li>
+                            <li><a href="">Shadows & Mirror Reflection</a></li>
+                            <li><a href="">Logo Design</a></li>
+                            <li><a href="">Vectorization</a></li>
+                            <li><a href="">Hair Masking/Clipping</a></li>
+                            <li><a href="">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <span style="text-align: center;display: block;">Copyright @2021 Designed With by Monistic-Hotel Company</span>
+            </div>
+        </footer>
+
+        <a href="#" class="back-to-top fa fa-chevron-up"></a>
+    </main>
+
+
+    <script>
+
+        var startDate = $("#start").val();
+        var endDate = $("#end").val();
+
+        $('#start').daterangepicker({
+            "autoApply": true,
+            "opens": 'right',
+            "minDate": new Date(),
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+        });
+
+        var de = $('#start').data('daterangepicker');
+
+        $('#start').on('apply.daterangepicker', function(ev, picker) {
+            updateTextDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $("#card_search").click(function(){
+            $('#location').focus();
+        });
+        
+        $("#location_clear").click(function(){
+            $("#location").val('');
+            $("#location_clear").css("visibility", "hidden");
+        });
+
+        $("#guest_clear").click(function(){
+            $("#guest").val('');
+            $("#adult").html(1);
+            $("#child").html(0);
+            $("#infant").html(0);
+            $("#guest_clear").css("visibility", "hidden");
+        });
+
+        $("#start_clear").click(function(){
+            $("#start").val('');
+            $("#start_clear").css("visibility", "hidden");
+            $("#end").val('');
+            $("#end_clear").css("visibility", "hidden");
+            de.setStartDate(new Date);
+            de.setEndDate(new Date);
+            $('#all-fee').css('display','none');
+            $('#fee-area').css('display','none');
+        });
+
+        $("#end_clear").click(function(){
+            $("#end").val('');
+            $("#end_clear").css("visibility", "hidden");
+            $("#start").val('');
+            $("#start_clear").css("visibility", "hidden");
+            de.setStartDate(new Date);
+            de.setEndDate(new Date);
+            $('#all-fee').css('display','none');
+            $('#fee-area').css('display','none');
+        });
+
+        function clear_location() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_guest() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_calendar() {
+            if (document.getElementById("start").value.length > 0) {
+                $("#start_clear").css("visibility", "visible");
+            } else {
+                $("#start_clear").css("visibility", "hidden");
+            }
+        }
+
+        function updateTextDate(start, end) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+            const fee = 1614;
+            const night_fee = fee * diffDays
+            const service = 80;
+            const total = night_fee + service;
+
+            $('#start').val(start);
+            $('#end').val(end);
+            $('#all-fee').css('display','block');
+            $('#fee-area').css('display','block');
+            $('#night-fee').html(numberWithCommas(night_fee));
+            $('#total').html(numberWithCommas(total));
+
+            if (diffDays > 1) {
+                $('#nights').html(diffDays + " nights");
+            } else {
+                $('#nights').html("1 night");
+            }
+            
+            if (document.getElementById("start").value.length > 0) {
+                $("#start_clear").css("visibility", "visible");
+            } else {
+                $("#start_clear").css("visibility", "hidden");
+            }
+
+            if (document.getElementById("end").value.length > 0) {
+                $("#end_clear").css("visibility", "visible");
+            } else {
+                $("#end_clear").css("visibility", "hidden");
+            }
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        $('#end').on('focus', function() {
+            $('#start').focus();
+        });
+
+        $('#search_header_bar').on('click', function() {
+            $('#location').focus();
+            $('#search_header_bar').css('display','none');
+        });
+
+        function show_guests() {
+            var x = document.getElementById("guest_detail");
+            if (x.style.display == "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+
+        $(document).on('click', function(e) {
+            if ( $(e.target).closest('#guest').length ) {
+                $("#guest_detail").show();
+            }else if ( ! $(e.target).closest('#guest_detail').length ) {
+                $('#guest_detail').hide();
+            }
+        });
+
+        function increase(e) {
+            $("#guest_clear").css("visibility", "visible");
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+
+            if (parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0 && parseInt($("#adult").html(), 10) == 0) {
+                $("#adult").html(parseInt($("#adult").html(), 10) + 1);
+            }
+
+            input.html(val + 1);
+
+            if (parseInt($("#adult").html(), 10) == 11) {
+                input.html(val);
+            }
+            if (parseInt($("#child").html(), 10) == 6 || parseInt($("#infant").html(), 10) == 6) {
+                input.html(val);
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) { 
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val(1 + " guest");
+            }
+        }
+
+        function decrease(e) {
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+            
+            if (val > 0) {
+                input.html(val - 1);
+            }
+
+            if (((parseInt($("#child").html(), 10) >= 1 || parseInt($("#infant").html(), 10) >= 1) && parseInt($("#adult").html(), 10) == 1)) {
+                $("#adult").html(1);
+            }
+            
+            if (parseInt($("#adult").html(), 10) == 1 && parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0) {
+                $("#guest").val("");
+                $("#guest_clear").css("visibility", "hidden");
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) { 
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val();
+            }
+        }
+
+        $(document).ready(function ($) {
+            if ($(this).scrollTop() > 50) {
+                $('.back-to-top').fadeIn('slow');
+                $('#header').addClass('header-fixed');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+                $('#header').removeClass('header-fixed');
+            }
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 50) {
+                    $('.back-to-top').fadeIn('slow');
+                    $('#header').addClass('header-fixed');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                    $('#header').removeClass('header-fixed');
+                }
+                if ($(this).scrollTop() > 100) {
+                    $('#img-prev').css('display','none');
+                    $('#img-next').css('display','none');
+                } else {
+                    $('#img-prev').css('display','block');
+                    $('#img-next').css('display','block');
+                }
+            });
+            $(window).load(function(){
+                if ($(this).scrollTop() > 50) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+            });
+            $('.back-to-top').click(function () {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 1500, 'easeInOutExpo');
+                return false;
+            });
+            $("#login_button").click(function() {
+                document.body.classList.add("stop-scrolling"); 
+            });
+            $(".lw-overlay").click(function() {
+                document.body.classList.remove("stop-scrolling"); 
+            });
+            $(".lw-close").click(function() {
+                document.body.classList.remove("stop-scrolling"); 
+            });
+        });
+
+        document.addEventListener( 'DOMContentLoaded', function () {
+            var secondarySlider = new Splide('#thumbnail',{
+                fixedWidth  : 50,
+                height      : 60,
+                gap         : 10,
+                cover       : true,
+                isNavigation: true,
+                focus       : 'center',
+                breakpoints : {
+                    '600': {
+                        fixedWidth: 66,
+                        height    : 40,
+                    }
+                },
+            }).mount();
+            
+            var primarySlider = new Splide('#sync',{
+                type       : 'fade',
+                heightRatio: 0.1,
+                pagination : true,
+                arrows     : true,
+                cover      : true,
+            });
+
+            new Splide('#other-choice').mount();
+            
+            primarySlider.sync(secondarySlider).mount();
+        });
+
+        $('#pagination-container').pagination({
+            dataSource: [1, 2, 3, 4, 5, 6, 7, 8],
+            className: 'paginationjs-big',
+            pageSize: 5,
+            callback: function(data, pagination) {
+                //var html = template(data);
+                console.log(data);
+                //$('#data-container').html(html);
+            }
+        })
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+    <script src="js/little-widgets.js"></script>
+    <script src="js/other-login.js"></script>
+    <script src="js/splide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.3/rangeslider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+
+</body>
+
+</html>

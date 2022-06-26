@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Confirm and pay</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="cache-control" content="max-age=86400, public" />
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id"
+        content="270203284440-h0uk50qsngj7976gfl5ihmie64cf643u.apps.googleusercontent.com">
+    <link href="images/logo.ico" rel="icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="css/little-widgets.css" />
+    <link rel="stylesheet" type="text/css" href="css/login.css" />
+    <link rel="stylesheet" type="text/css" href="css/book.css" />
+    <link rel="stylesheet" type="text/css" href="css/splide.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script async src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
+
+<body style="overflow-x: hidden;">
+    <header id="header" style="height: 100px; z-index: 1000; position: fixed;top: 0;width: 100%;">
+        <div class="container" style="text-align: center;margin-left: auto;margin-right: auto;">
+            <nav class="">
+                <a href=""><img src="images/logo.png" alt="" title="" width="120" /></a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main" style="margin-top: 150px;">
+        <div class="container">
+            <h1 style="display: inline-block;"><a href="details" class="fas fa-arrow-left"></a></h1>
+            <h1 style="display: inline-block;margin-left: 10px;">Confirm and pay</h1>
+        </div>
+
+        <div class="container">
+            <div class="booking-record">
+                <div class="row">
+                    <div style="width: fit-content;">
+                        <img src="images/rooms/456974944/456974944-1.jpg" style="width: 12vw;" />
+                    </div>
+                    <div class="col-9" style="width: auto;">
+                        <div style="border-bottom: 1px solid #DDDDDD !important;">
+                            <span class="room-name">The Beach Room</span>
+                            <span class="room-des">(Tiny house in Hong Kong)</span>
+                        </div>
+                        <div>
+                            <h3 style="font-weight: bold;">Price Details</h3>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-5" id="all-fee">
+                                    <h5>$1,614 x <span id="nights">1 night</span></h5>
+                                    <h5 style="margin-top: 10px;">Service fee</h5>
+                                    <h5 style="margin-top: 10px;">Total</h5>
+                                </div>
+                                <div class="col-5" id="fee-area">
+                                    <h5>$ <span id="night-fee">1,614</span></h5>
+                                    <h5 style="margin-top: 10px;">$ <span id="service-fee">80</span></h5>
+                                    <h5 style="margin-top: 10px;">$ <span id="total">1,694</span></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-detail">
+                <h2 style="font-weight: bold;">Your trip</h2>
+                <div class="trip-detail">
+                    <div class="form-group">
+                        <span class="form-label">Dates</span>
+                        <input type="text" value="2021-04-11 - 2021-04-13" label="Start" id="date_range" name="start"
+                            class="form-control" readonly
+                            style="text-align: center;display: inline-block;min-width: 250px;width: 25vw;">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Guests</span>
+                        <input class="form-control" id="guest" type="text" readonly onclick="show_guests()"
+                            value="1 guest">
+                        <span id="guest_clear" class="fa fa-times guestclear"></span>
+                    </div>
+                    <div id="guest_detail">
+                        <div class="guest_type">
+                            <span class="fas fa-male" style="width: 25px;display: inline-block;"></span>
+                            <span
+                                style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">adult</span>
+                            <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                            <span class="guest_no" id="adult">1</span>
+                            <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                        </div>
+                        <div class="guest_type">
+                            <span class="fas fa-child" style="width: 25px;display: inline-block;"></span>
+                            <span
+                                style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">child</span>
+                            <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                            <span class="guest_no" id="child">0</span>
+                            <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                        </div>
+                        <div class="guest_type">
+                            <span class="fas fa-baby" style="width: 25px;display: inline-block;"></span>
+                            <span
+                                style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">infant</span>
+                            <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                            <span class="guest_no" id="infant">0</span>
+                            <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <form action="./charge.php" method="post" id="payment-form">
+                        <div>
+                            <span class="form-label">First Name</span>
+                            <input type="text" name="first_name" class="form-control mb-3 StripeElement StripeElement--empty">
+                            <span class="form-label">Last Name</span>
+                            <input type="text" name="last_name" class="form-control mb-3 StripeElement StripeElement--empty">
+                            <span class="form-label">Credit Card</span>
+                            <div id="card-element" class="form-control">
+                            </div>
+                    
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                    
+                        <button class="payment-submit">Submit Payment</button>
+                        <div id="google_pay" style="display: none;"></div>
+                    </form>
+                  </div>
+
+            </div>
+        </div>
+
+
+
+        <footer class="footer">
+            <div class="container">
+                <span style="text-align: center;display: block;">Copyright @2021 Designed With by Monistic-Hotel
+                    Company</span>
+            </div>
+        </footer>
+
+        <a href="#" class="back-to-top fa fa-chevron-up"></a>
+    </main>
+
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const check_in = urlParams.get('check_in');
+        const check_out = urlParams.get('check_out');
+        var total = 1164;
+
+        $('#date_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            "startDate": check_in,
+            "endDate": check_out,
+            "autoApply": true,
+            "opens": 'right',
+            "minDate": new Date(),
+            "autoUpdateInput": false,
+        }, function (start, end, label) {
+        });
+
+        var de = $('#date_range').data('daterangepicker');
+
+        $('#date_range').on('apply.daterangepicker', function (ev, picker) {
+            updateTextDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        function updateTextDate(start, end) {
+            window.history.replaceState(null, null, "?check_in=" + start + "&check_out=" + end);
+
+            const oneDay = 24 * 60 * 60 * 1000;
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+            const fee = 1614;
+            const night_fee = fee * diffDays
+            const service = 80;
+            total = night_fee + service;
+
+            $('#date_range').val(start + " - " + end);
+            $('#all-fee').css('display', 'block');
+            $('#fee-area').css('display', 'block');
+            $('#night-fee').html(numberWithCommas(night_fee));
+            $('#total').html(numberWithCommas(total));
+
+            if (diffDays > 1) {
+                $('#nights').html(diffDays + " nights");
+            } else {
+                $('#nights').html("1 night");
+            }
+        }
+
+        $("#guest_clear").click(function () {
+            $("#guest").val("1 guest");
+            $("#adult").html(1);
+            $("#child").html(0);
+            $("#infant").html(0);
+            $("#guest_clear").css("visibility", "hidden");
+        });
+
+        $("#check-availability").click(function () {
+            $('#start').focus();
+        });
+
+        function clear_location() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_guest() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_calendar() {
+            if (document.getElementById("start").value.length > 0) {
+                $("#start_clear").css("visibility", "visible");
+            } else {
+                $("#start_clear").css("visibility", "hidden");
+            }
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function show_guests() {
+            var x = document.getElementById("guest_detail");
+            if (x.style.display == "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#guest').length) {
+                $("#guest_detail").show();
+            } else if (!$(e.target).closest('#guest_detail').length) {
+                $('#guest_detail').hide();
+            }
+        });
+
+        function increase(e) {
+            $("#guest_clear").css("visibility", "visible");
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+
+            if (parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0 && parseInt($("#adult").html(), 10) == 0) {
+                $("#adult").html(parseInt($("#adult").html(), 10) + 1);
+            }
+
+            input.html(val + 1);
+
+            if (parseInt($("#adult").html(), 10) == 11) {
+                input.html(val);
+            }
+            if (parseInt($("#child").html(), 10) == 6 || parseInt($("#infant").html(), 10) == 6) {
+                input.html(val);
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val(1 + " guest");
+            }
+        }
+
+        function decrease(e) {
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+
+            if (input[0].id == "adult" & val > 0) {
+                $("#adult").html(1);
+            } else if (val > 0) {
+                input.html(val - 1);
+            }
+
+            if (((parseInt($("#child").html(), 10) >= 1 || parseInt($("#infant").html(), 10) >= 1) && parseInt($("#adult").html(), 10) == 1)) {
+                $("#adult").html(1);
+            }
+
+            if (parseInt($("#adult").html(), 10) == 1 && parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0) {
+                $("#guest").val("");
+                $("#guest_clear").css("visibility", "hidden");
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val("1 guest");
+            }
+        }
+
+        $(document).ready(function ($) {
+            if ($(this).scrollTop() > 50) {
+                $('.back-to-top').fadeIn('slow');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+            }
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 50) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+                if ($(this).scrollTop() > 100) {
+                    $('#img-prev').css('display', 'none');
+                    $('#img-next').css('display', 'none');
+                } else {
+                    $('#img-prev').css('display', 'block');
+                    $('#img-next').css('display', 'block');
+                }
+            });
+            $(window).load(function () {
+                if ($(this).scrollTop() > 50) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+            });
+            $('.back-to-top').click(function () {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 1500, 'easeInOutExpo');
+                return false;
+            });
+        });
+
+        const baseRequest = {
+            apiVersion: 2,
+            apiVersionMinor: 0
+        };
+
+        const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
+
+        const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+
+        const tokenizationSpecification = {
+            type: 'PAYMENT_GATEWAY',
+            parameters: {
+                'gateway': 'example',
+                'gatewayMerchantId': 'exampleGatewayMerchantId'
+            }
+        };
+
+        const baseCardPaymentMethod = {
+            type: 'CARD',
+            parameters: {
+                allowedAuthMethods: allowedCardAuthMethods,
+                allowedCardNetworks: allowedCardNetworks
+            }
+        };
+
+        const cardPaymentMethod = Object.assign(
+            {},
+            baseCardPaymentMethod,
+            {
+                tokenizationSpecification: tokenizationSpecification
+            }
+        );
+
+        let paymentsClient = null;
+
+        function getGoogleIsReadyToPayRequest() {
+            return Object.assign(
+                {},
+                baseRequest,
+                {
+                    allowedPaymentMethods: [baseCardPaymentMethod]
+                }
+            );
+        }
+
+        function getGooglePaymentDataRequest() {
+            const paymentDataRequest = Object.assign({}, baseRequest);
+            paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
+            paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
+            paymentDataRequest.merchantInfo = {
+                merchantName: 'Monistic-Hotel'
+            };
+            paymentDataRequest.callbackIntents = ["PAYMENT_AUTHORIZATION"];
+
+            return paymentDataRequest;
+        }
+
+        function getGooglePaymentsClient() {
+            if (paymentsClient === null) {
+                paymentsClient = new google.payments.api.PaymentsClient({
+                    environment: 'TEST',
+                    paymentDataCallbacks: {
+                        onPaymentAuthorized: onPaymentAuthorized
+                    }
+                });
+            }
+            return paymentsClient;
+        }
+
+        function onPaymentAuthorized(paymentData) {
+            return new Promise(function (resolve, reject) {
+                // handle the response
+                processPayment(paymentData)
+                    .then(function () {
+                        resolve({ transactionState: 'SUCCESS' });
+                        console.log(transactionState);
+                    })
+                    .catch(function () {
+                        resolve({
+                            transactionState: 'ERROR',
+                            error: {
+                                intent: 'PAYMENT_AUTHORIZATION',
+                                message: 'Insufficient funds',
+                                reason: 'PAYMENT_DATA_INVALID'
+                            }
+                        });
+                    });
+            });
+        }
+
+        function onGooglePayLoaded() {
+            const paymentsClient = getGooglePaymentsClient();
+            paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
+                .then(function (response) {
+                    if (response.result) {
+                        addGooglePayButton();
+                    }
+                })
+                .catch(function (err) {
+                    console.error(err);
+                });
+        }
+
+        function addGooglePayButton() {
+            const paymentsClient = getGooglePaymentsClient();
+            const button =
+                paymentsClient.createButton({
+                    buttonType: 'plain',
+                    onClick: onGooglePaymentButtonClicked 
+                });
+            document.getElementById('google_pay').appendChild(button);
+        }
+
+        function getGoogleTransactionInfo() {
+            return {
+                displayItems: [
+                    {
+                        label: "Subtotal",
+                        type: "SUBTOTAL",
+                        price: "11.00",
+                    },
+                    {
+                        label: "Tax",
+                        type: "TAX",
+                        price: "1.00",
+                    }
+                ],
+                countryCode: 'HK',
+                currencyCode: "HKD",
+                totalPriceStatus: "FINAL",
+                totalPrice: String(total),
+                totalPriceLabel: "Total"
+            };
+        }
+
+        function onGooglePaymentButtonClicked() {
+            const paymentDataRequest = getGooglePaymentDataRequest();
+            paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
+
+            const paymentsClient = getGooglePaymentsClient();
+            paymentsClient.loadPaymentData(paymentDataRequest);
+        }
+
+        function processPayment(paymentData) {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+
+                    paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+
+                    resolve({});
+                }, 3000);
+            });
+        }
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="js/little-widgets.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="js/payment.js"></script>
+
+
+</body>
+
+</html>

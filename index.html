@@ -1,0 +1,492 @@
+<?php
+
+session_start();
+    
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Monistic-Hotel</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="cache-control" content="max-age=86400, public" />
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <!--<meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="270203284440-h0uk50qsngj7976gfl5ihmie64cf643u.apps.googleusercontent.com">-->
+    <link href="images/logo.ico" rel="icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/little-widgets.css" />
+    <link rel="stylesheet" type="text/css" href="css/login.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<body style="overflow-x: hidden;">
+    <header id="header" style="height: 100px; z-index: 1000; position: fixed;top: 0;width: 100%;">
+        <div class="container">
+            <div id="nav-item">
+                <nav class="navbar">
+                    <a href=""><img src="images/logo.png" alt="" title="" width="120" /></a>
+                    <div class="form-group" style="display: none;" id="search_header_bar">
+                        <span class="fa fa-search search_header_clear"> Where are you going?</span>
+                    </div>
+                    <a class="fas fa-users" data-lw-onclick="#login" id="login_button"></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="lw-widget lw-widget_fullscreen" id="login">
+        <div class="lw-overlay" data-lw-close id="close"></div>
+        <div class="lw-container" style="border-radius: 10px;">
+            <div class="lw-item lw-item_bg"><button id="clear" class="lw-close" type="button" data-lw-close><i
+                    class="fa fa-times" style="font-size: 50px;"></i></button>
+                <form class="login100-form validate-form" method="POST" autocomplete="off">
+                    <h1 style="text-align: center;">SIGN IN</h1>
+                    <div class="wrap-input100 validate-input" data-validate="員工編號錯誤" style="margin-top: 50px;">
+                        <input class="input100" type="email" name="email" id="email">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Email</span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="密碼錯誤">
+                        <input class="input100" type="password" name="password" id="password">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Password</span>
+                    </div>
+                    <div class="container-login100-form-btn" style="margin-top: 50px;">
+                        <button type="button" class="login100-form-btn" id="myBtn">SIGN IN</button>
+                    </div>
+                    <div>
+                        <span style="text-align: center;display: block;margin-top: 20px;">You can also use these accounts login below</span>
+                    </div>
+                    <div id="gSignInWrapper">
+                        <div id="google_login" class="customGPlusSignIn customBtn">
+                          <span class="icon"></span>
+                          <span class="buttonText">Sign in with Google</span>
+                        </div>
+                    </div>
+                    <div class="" data-max-rows="1" data-size="large" data-button-type="continue_with" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLoginState();"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <main id="main">
+        <img src="images/homepage.jpg" style="width: 100vw;position: relative;max-width: 100%;max-height: 100vh;">
+        <div style="position: absolute;top:300px;height: 1200px;margin-left: auto;margin-right: auto;left:0;right:0">
+            <div class="sticky">
+                <div class="booking-form">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <span class="form-label">Location</span>
+                                    <input class="form-control" type="text" placeholder="Where are you going?" id="location" value="" oninput="clear_location()">
+                                    <span id="location_clear" class="fa fa-times searchclear"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <span class="form-label">Guests</span>
+                                    <input class="form-control" id="guest" type="text" readonly onclick="show_guests()">
+                                    <span id="guest_clear" class="fa fa-times guestclear"></span>
+                                </div>
+                                <div id="guest_detail">
+                                    <div class="guest_type">
+                                        <span class="fas fa-male" style="width: 25px;display: inline-block;"></span>
+                                        <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">adult</span>
+                                        <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                        <span class="guest_no" id="adult">0</span>
+                                        <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                                    </div>
+                                    <div class="guest_type">
+                                        <span class="fas fa-child" style="width: 25px;display: inline-block;"></span>
+                                        <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">child</span>
+                                        <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                        <span class="guest_no" id="child">0</span>
+                                        <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                                    </div>
+                                    <div class="guest_type">
+                                        <span class="fas fa-baby" style="width: 25px;display: inline-block;"></span>
+                                        <span style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;display: inline-block;width: 50px;">infant</span>
+                                        <button class="input_number fa fa-minus" onclick="decrease(this)" type="button"></button>
+                                        <span class="guest_no" id="infant">0</span>
+                                        <button class="input_number fa fa-plus" onclick="increase(this)" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <span class="form-label">Check In</span>
+                                    <input type="text" value="" label="Start" id="start" name="start" class="form-control" readonly style="width: 250px;text-align: center;">
+                                    <span id="start_clear" class="fa fa-times calendarclear"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <span class="form-label">Check out</span>
+                                    <input type="text" value="" label="End" id="end" name="end" class="form-control" readonly style="width: 250px;text-align: center;"> 
+                                    <span id="end_clear" class="fa fa-times calendarclear"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-btn">
+                                    <button class="submit-btn fas fa-search"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section id="recommend">
+            <div class="container" style="margin-left: auto;margin-right: auto;text-align: center;">
+                <div class="card-row">
+                    <div class="col card-first-col" style="background-image: url('images/col-1.jpg');background-repeat: no-repeat;background-size: cover;position: relative;">
+                        <div style="background-color: rgba(0, 0, 0, 0.3);position: absolute;top: 0;left: 0;width: 100%;height: 100%;border-radius: 10px;">
+                            <h1 style="color:#fff;font-weight: bold;text-shadow: rgba(0, 0, 0, 0.4) 0px 6px 20px;text-align: center;margin-top:200px;">Here you can find many homestays from different places</h1>
+                            <button class="submit-btn" style="width: auto;margin-right: auto;margin-left: auto;box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 20px;" id="card_search">Find a homestay</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row card-row">
+                    <div class="col-6">
+                        <a href="" style="text-decoration: none;">
+                            <div class="card-col" style="background-image: url('images/col-2.jpg');background-repeat: no-repeat;background-size: cover;"></div>
+                            <div style="font-size: 20px;color:#222222;margin-top: 10px;font-weight: bold;">Beautiful house</div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="" style="text-decoration: none;">
+                            <div class="card-col" style="background-image: url('images/col-3.jpg');background-repeat: no-repeat;background-size: cover;"></div>
+                            <div style="font-size: 20px;color:#222222;margin-top: 10px;font-weight: bold;">Minimalist style</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row card-row">
+                    <a hre="" style="text-decoration: none;">
+                        <div class="col card-first-col" style="background-image: url('images/col-4.jpg');background-repeat: no-repeat;background-size: cover;"></div>
+                        <div style="font-size: 20px;color:#222222;margin-top: 10px;font-weight: bold;">Featured Residence</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">Support</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="http://webenlance.com">Image Rectoucing</a></li>
+                            <li><a href="http://webenlance.com">Clipping Path</a></li>
+                            <li><a href="http://webenlance.com">Hollow Man Montage</a></li>
+                            <li><a href="http://webenlance.com">Ebay &amp; Amazon</a></li>
+                            <li><a href="http://webenlance.com">Hair Masking/Clipping</a></li>
+                            <li><a href="http://webenlance.com">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">About</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="http://webenlance.com">Remove Background</a></li>
+                            <li><a href="http://webenlance.com">Shadows &amp; Mirror Reflection</a></li>
+                            <li><a href="http://webenlance.com">Logo Design</a></li>
+                            <li><a href="http://webenlance.com">Vectorization</a></li>
+                            <li><a href="http://webenlance.com">Hair Masking/Clipping</a></li>
+                            <li><a href="http://webenlance.com">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md col-6 col">
+                        <h5 class="footer-area">About</h5>
+                        <ul style="list-style-type:none;">
+                            <li><a href="http://webenlance.com">Remove Background</a></li>
+                            <li><a href="http://webenlance.com">Shadows &amp; Mirror Reflection</a></li>
+                            <li><a href="http://webenlance.com">Logo Design</a></li>
+                            <li><a href="http://webenlance.com">Vectorization</a></li>
+                            <li><a href="http://webenlance.com">Hair Masking/Clipping</a></li>
+                            <li><a href="http://webenlance.com">Image Cropping</a></li>
+                        </ul>
+                    </div>
+                    <!--<div class="col-sm-4 col-md col-sm-4 col-12 col">
+                        <h5 class="footer-area">Find us</h5>
+                        <p class="mb10">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                        <p><i class="fa fa-phone"></i>  +852-22222222  </p>
+                        <p><i class="fa fa fa-envelope"></i> services@monistic-hotel.com  </p>
+                    </div>-->
+                </div>
+            </div>
+            <div class="container">
+                <span style="text-align: center;display: block;">Copyright @2021 Designed With by Monistic-Hotel Company</span>
+            </div>
+        </footer>
+
+        <a href="#" class="back-to-top fa fa-chevron-up"></a>
+    </main>
+
+
+    <script>
+        var startDate = $("#start").val();
+        var endDate = $("#end").val();
+
+        $('#start').daterangepicker({
+            "autoApply": true,
+            "opens": 'right',
+            "minDate": new Date(),
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+        });
+
+        var de = $('#start').data('daterangepicker');
+
+        $('#start').on('apply.daterangepicker', function(ev, picker) {
+            updateTextDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $("#card_search").click(function(){
+            $('#location').focus();
+        });
+        
+        $("#location_clear").click(function(){
+            $("#location").val('');
+            $("#location_clear").css("visibility", "hidden");
+        });
+
+        $("#guest_clear").click(function(){
+            $("#guest").val('');
+            $("#adult").html(0);
+            $("#child").html(0);
+            $("#infant").html(0);
+            $("#guest_clear").css("visibility", "hidden");
+        });
+
+        $("#start_clear").click(function(){
+            $("#start").val('');
+            $("#start_clear").css("visibility", "hidden");
+            $("#end").val('');
+            $("#end_clear").css("visibility", "hidden");
+            de.setStartDate(new Date);
+            de.setEndDate(new Date);
+        });
+
+        $("#end_clear").click(function(){
+            $("#end").val('');
+            $("#end_clear").css("visibility", "hidden");
+            $("#start").val('');
+            $("#start_clear").css("visibility", "hidden");
+            de.setStartDate(new Date);
+            de.setEndDate(new Date);
+        });
+
+        function clear_location() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_guest() {
+            if (document.getElementById("location").value.length > 0) {
+                $("#location_clear").css("visibility", "visible");
+            } else {
+                $("#location_clear").css("visibility", "hidden");
+            }
+        }
+
+        function clear_calendar() {
+            if (document.getElementById("start").value.length > 0) {
+                $("#start_clear").css("visibility", "visible");
+            } else {
+                $("#start_clear").css("visibility", "hidden");
+            }
+        }
+
+        function updateTextDate(start, end) {
+            $('#start').val(start);
+            $('#end').val(end);
+
+            if (document.getElementById("start").value.length > 0) {
+                $("#start_clear").css("visibility", "visible");
+            } else {
+                $("#start_clear").css("visibility", "hidden");
+            }
+
+            if (document.getElementById("end").value.length > 0) {
+                $("#end_clear").css("visibility", "visible");
+            } else {
+                $("#end_clear").css("visibility", "hidden");
+            }
+        }
+
+        $('#end').on('focus', function() {
+            $('#start').focus();
+        });
+
+        $('#search_header_bar').on('click', function() {
+            $('#location').focus();
+            $('#search_header_bar').css('display','none');
+        });
+
+        function show_guests() {
+            var x = document.getElementById("guest_detail");
+            if (x.style.display == "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+
+        $(document).on('click', function(e) {
+            if ( $(e.target).closest('#guest').length ) {
+                $("#guest_detail").show();
+            }else if ( ! $(e.target).closest('#guest_detail').length ) {
+                $('#guest_detail').hide();
+            }
+        });
+
+        function increase(e) {
+            $("#guest_clear").css("visibility", "visible");
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+
+            if (parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0 && parseInt($("#adult").html(), 10) == 0) {
+                $("#adult").html(parseInt($("#adult").html(), 10) + 1);
+            }
+
+            input.html(val + 1);
+
+            if (parseInt($("#adult").html(), 10) == 11) {
+                input.html(val);
+            }
+            if (parseInt($("#child").html(), 10) == 6 || parseInt($("#infant").html(), 10) == 6) {
+                input.html(val);
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) { 
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val(1 + " guest");
+            }
+        }
+
+        function decrease(e) {
+            var input = $(e).parents(".guest_type").find(".guest_no");
+            var val = parseInt(input.html(), 10);
+
+            if (val > 0) {
+                input.html(val - 1);
+            }
+
+            if (((parseInt($("#child").html(), 10) >= 1 || parseInt($("#infant").html(), 10) >= 1) && parseInt($("#adult").html(), 10) == 0)) {
+                $("#adult").html(1);
+            }
+            
+            if (parseInt($("#adult").html(), 10) == 0 && parseInt($("#child").html(), 10) == 0 && parseInt($("#infant").html(), 10) == 0) {
+                $("#guest").val("");
+                $("#guest_clear").css("visibility", "hidden");
+            }
+
+            if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infants");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0 && parseInt($("#infant").html(), 10) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest, " + parseInt($("#infant").html(), 10) + " infant");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 1) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guests");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) {
+                $("#guest").val((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) + " guest");
+            } else if ((parseInt($("#adult").html(), 10) + parseInt($("#child").html(), 10)) > 0) { 
+                $("#guest").val(parseInt($("#adult").html(), 10) + " guests");
+            } else {
+                $("#guest").val();
+            }
+        }
+
+        $(document).ready(function ($) {
+            if ($(this).scrollTop() > 80) {
+                $('.back-to-top').fadeIn('slow');
+                $('#header').addClass('header-fixed');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+                $('#header').removeClass('header-fixed');
+            }
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 80) {
+                    $('.back-to-top').fadeIn('slow');
+                    $('#header').addClass('header-fixed');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                    $('#header').removeClass('header-fixed');
+                }
+                if ($(this).scrollTop() > 1400) {
+                    $('#search_header_bar').css('display','block');
+                } else {
+                    $('#search_header_bar').css('display','none');
+                }
+            });
+            $(window).load(function(){
+                if ($(this).scrollTop() > 100) {
+                    $('.back-to-top').fadeIn('slow');
+                } else {
+                    $('.back-to-top').fadeOut('slow');
+                }
+            });
+            $('.back-to-top').click(function () {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 1500, 'easeInOutExpo');
+                return false;
+            });
+            $("#login_button").click(function() {
+                document.body.classList.add("stop-scrolling"); 
+            });
+            $(".lw-overlay").click(function() {
+                document.body.classList.remove("stop-scrolling"); 
+            });
+            $(".lw-close").click(function() {
+                document.body.classList.remove("stop-scrolling"); 
+            });
+        });
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="js/little-widgets.js"></script>
+    <script src="js/other-login.js"></script>
+
+</body>
+
+</html>
